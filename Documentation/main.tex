@@ -5,6 +5,7 @@
 \usepackage{amsfonts}
 \usepackage{bm}
 \usepackage{xcolor}
+\usepackage{import}
 \definecolor{light-gray}{gray}{0.95}
 \newcommand{\code}[1]{\colorbox{light-gray}{\texttt{#1}}}
 \title{Plexus_Documentation_YG}
@@ -21,20 +22,7 @@ First issue:
 '/home/.../plexus/.eggs/pytest.runner-5.3.1-py3.8.egg/pytest.runner-5.3.1.dist-info' '/home/.../plexus/.eggs/pytestrunner-5.3.1-py3.8.egg/EGG-INFO'
 \textit{ERROR: Command errored out with exit status 1: python setup.py egg.info Check the logs for full command output.}
 
-
-\section{DMPlex}
-DMPLex is used within PETSC to handle unstructured mesh with useful interfaces for both topology and geometry. A DMPLex object is based on defining a mesh as a Hasse Diagram, where every level of topology is a separate layer in the diagram.
-
-Given that DMPLex objects handles unstructured meshes, every point is defined by its "cone" and "support/closure".
-
-\begin{itemize}
-    \item The support/closure of a point is defined as the set of all the point of the next highest topological dimension that is connected to the current point
-    \item The cone of a point is defined as a set of all the point of the next lowest topological dimension.
-\end{itemize}
-
-Interpolation in DMPLex is defined as a mesh which contains some but not all "intermidate" entities. Nomrmally, a user will have a \textit{fully interpolated mesh}.
-
-Once created, the DMPLex object is then distributed to all available processes. At this point, each process check that its distributed section of the DMPLex object is not NULL, and replace its non-distributed DMPLex object with the distributed ones.
+\import*{./../Sections/PETSC/}{PETSC.tex}
 
 \section{Python3}
 \subsection{super}

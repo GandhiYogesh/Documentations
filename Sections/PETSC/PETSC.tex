@@ -1,0 +1,39 @@
+\section{PETSC}
+\subsection{Creating and Assembling Vectors}
+Two basic vector types : Sequential and parallel (MPI-based) \\
+\code{VecCreateSeq(PETSC\_COMM\_SELF, PetscInt m, Vec* x)} \\
+\code{VecCreateMPI(PETSC\_COMM\_SELF, PetscInt m, PetscInt M, Vec* x)} \\
+creates a vector distributed over all processes in the communicator, \code{comm}, where \code{m} indicates the number of components to store on the local process, and \code{M} is the total number of vector components.\\
+\code{PETSC\_DECIDE} or \code{PETSC\_DETERMINE} indicate that PETSc should decide or determine it. More generally, one can use following routines:\\
+\code{VectorCreate(MPI\_Comm comm, Vec* v);}\\
+\code{VecSetSizes(Vec v, PetscInt m, PetscInt M);}\\
+\code{VecSetFromOptions(Vec v);} \\
+Its emphasize that all processes in \code{comm} must call the vector creation routines, since these routines ar  collective over all processes in the communicator. In addition, if a sequence of \code{VecCreateXXX()} routines is used they must be called in the same order on each process in the communicator. \\
+One can assign a single value to all components of a vector with the command: \\
+\code{VecSet(Vec x, PetsScalar value);} \\
+Assigning values to individual components of the vector is more complicated: \\
+\code{VecSetValues(Vec x, PetscInt n, PetscInt *indices, PetscScalar *values, INSERT\_VALUES)} \\
+The argument \code{n} gives the number of components being set in the insertion. The integer array \textbf{indices} contains the \textit{global components indices}, and \textbf{values} is the array of values to be inserted.\\
+One must call the following to perform any needed message passing of non-local components.\\
+\code{VecAssemblyBegin(Vec x);}\\
+\code{VecAssemblyEnd(Vec x);}\\
+In order to allow the overlap of communication and calculation, the user's code can perform any series of other action between these two calls  while the message are in transition. \\
+Its is also possible to create the vectors that use an array provided by the user, rather than having PETSc internally allocated the array space. Such vector can be created with the routines:\\
+\code{VecCreateMPIwithArray(MPI\_Comm comm, PetscInt bs, PetscInt n, PetscScalar *array, Vec *vv)} \\
+For parallel vectors that are distributed across the process by ranges, it is possible to determine a process's local range with the routine \\
+\code{VecGetOwnershipRange(Vec vec, PetscInt *low, PetscInt *high)}
+
+\subsection{Indexing and Ordering}
+\subsection{DMPlex}
+DMPLex is used within PETSC to handle unstructured mesh with useful interfaces for both topology and geometry. A DMPLex object is based on defining a mesh as a Hasse Diagram, where every level of topology is a separate layer in the diagram.
+
+Given that DMPLex objects handles unstructured meshes, every point is defined by its "cone" and "support/closure".
+
+\begin{itemize}
+    \item The support/closure of a point is defined as the set of all the point of the next highest topological dimension that is connected to the current point
+    \item The cone of a point is defined as a set of all the point of the next lowest topological dimension.
+\end{itemize}
+
+Interpolation in DMPLex is defined as a mesh which contains some but not all "intermidate" entities. Nomrmally, a user will have a \textit{fully interpolated mesh}.
+
+Once created, the DMPLex object is then distributed to all available processes. At this point, each process check that its distributed section of the DMPLex object is not NULL, and replace its non-distributed DMPLex object with the distributed ones.
