@@ -1,3 +1,126 @@
+
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{bm}
+\usepackage{xcolor}
+\definecolor{light-gray}{gray}{0.95}
+\newcommand{\code}[1]{\colorbox{light-gray}{\texttt{#1}}}
+\title{Plexus_Documentation_YG}
+\author{Yogesh Gandhi}
+\date{July 2021}
+
+\begin{document}
+
+
+\section{Introduction}
+First issue:
+
+\textit{PermissionError: [Errno 13] Permission denied:}
+'/home/.../plexus/.eggs/pytest.runner-5.3.1-py3.8.egg/pytest.runner-5.3.1.dist-info' '/home/.../plexus/.eggs/pytestrunner-5.3.1-py3.8.egg/EGG-INFO'
+\textit{ERROR: Command errored out with exit status 1: python setup.py egg.info Check the logs for full command output.}
+
+
+\section{DMPlex}
+DMPLex is used within PETSC to handle unstructured mesh with useful interfaces for both topology and geometry. A DMPLex object is based on defining a mesh as a Hasse Diagram, where every level of topology is a separate layer in the diagram.
+
+Given that DMPLex objects handles unstructured meshes, every point is defined by its "cone" and "support/closure".
+
+\begin{itemize}
+    \item The support/closure of a point is defined as the set of all the point of the next highest topological dimension that is connected to the current point
+    \item The cone of a point is defined as a set of all the point of the next lowest topological dimension.
+\end{itemize}
+
+Interpolation in DMPLex is defined as a mesh which contains some but not all "intermidate" entities. Nomrmally, a user will have a \textit{fully interpolated mesh}.
+
+Once created, the DMPLex object is then distributed to all available processes. At this point, each process check that its distributed section of the DMPLex object is not NULL, and replace its non-distributed DMPLex object with the distributed ones.
+
+\section{Python3}
+\subsection{super}
+The C3 superclass linearization of a class is the sum of the class plus a unique merge of linearization of its parents and a list of the parent itself. The list of parents as the last argument to the merge process preserves the local precedence order of direct parent classes.
+
+\_\_init\_\_ is an instance method, meaning that it takes as its first argument a reference to an instance. When called directly from the instance, the reference is passed implicitly
+
+\texttt{\#try calling init from the class without specifying an instance}
+
+\texttt{A.\_\_init\_\_()\# TypeError is raised due to the expected but missing reference}
+
+\texttt{a = A(); a.\_\_init\_\_(); A.\_\_init\_\_(a  )}
+
+
+Bob Martin "a good architecture allows you to postpone decision-making as long as possible"
+\section{VSCODE}
+\subsection*{Remote debugging}
+With remote debugging only a single Python process is executed on the remote VM then, on client computer, VSCode "attached itself" to this remote process, so you can match the remote code execution with your local files. It is important to keep exactly the same.py files on client and in host so that the debugging process is able to match line by line the two version.
+The magic lies in a library called ptvsd that makes the bridge for attaching local VSCode to remotely executed process. The remotely executed Python waits until the client debugging agent is attached.
+
+\section{Density Based apporach to topology optimization}
+\begin{equation*}
+    E_{e}(\rho_e) + E_{min} + \rho_{e}^p(E_0 - E_{min}), \ \  \rho_e \in [0,1]
+\end{equation*}
+i.e. for each element $e$ is assigned a density $\rho_e$ that determines it's Young Modulus $E_e$.
+
+The optimization problem is solved by means of a standard optimality criteria method
+\begin{equation*}
+    \rho_{e}^{new}=
+    \begin{cases}
+        max(0, \rho_{e}-m), & \text{if} \ \rho_{e}B_{e}^{\eta}\leq max(0, \rho_{e}-m)  \\
+        min(1, \rho_{e}+m), & \text{if} \ \rho_{e}B_{e}^{\eta}\geq min(0, \rho_{e}-m) \\
+        \rho_{e}B_{e}^{\eta}, & \text{otherwise}
+    \end{cases}
+\end{equation*}
+where $m$ is the move limit, $\eta$ is a numerical damping coefficient, and $B_e$ is obtained from the optimality condition as:
+\begin{equation*}
+    B_e = \frac{-\frac{\partial c}{\partial \rho_e}}{\lambda\frac{\partial V}{\partial \rho_e}} = \frac{p\rho_{e}^{p-1}(E_0 - E_{min})\bm{u}_{e}^T\bm{k}_0\bm{u}}{\lambda}
+\end{equation*}
+
+The sensitivity filter modifies the $\frac{\partial c}{\partial \rho_e}$ as follows:
+\begin{equation*}
+    \widehat{\frac{\partial c}{\partial \rho_e}} = \frac{1}{max(\gamma, \rho_e)\sum_{i\in N_e}H_{ei}}\sum_{i \in N_e}H_{ei}\rho_{i}\frac{\partial c}{\partial \rho_i}
+\end{equation*}
+where $N_e$ is the set of element $i$ for which the center-to-center distance $\Delta(e,i)$ to element is smaller than the filter radius $r_{min}$
+
+$H_{ei} = max(0,r_{min}-\Delta(e,i))$
+
+The term $\gamma$ is a small positve number introduced in order to avoid division by zero. This a differnce as compared to the classical SIMP that density variable can take zero value.
+\begin{equation*}
+    \tilde{\rho_e} = \frac{1}{\sum_{i\in N_e}H_{ei}}\sum_{i \in N_e}H_{ei}x_i\frac{\partial c}{\partial x_i}
+\end{equation*}
+\subsection*{MATLAB implementation}
+\code{top88(nelx, nely, volfrac, penal, rmin, ft)}
+
+\code{ft} specifies whether sensitivity filtering (\code{ft=1}) or density filtering (\code{ft=2}) should be used. A distinction is made between design variables \code {x} and the physical densities \code{xPhys}.
+
+The mesh elements with four nodes per element and 2 DOFs per node. The efficient assembly of the stiffness matrix in the optimization loop, a matrix \code{edofMat} is constructed. The \code{i-th} row of the \code{edofMat} contains the 8 DOFS indices corresponding to the \code{i-th} element
+\subsection*{Topological Derivatives}
+Topological Derivatives is the cloased form analytical expression that quantifies the sensitivity of a given performance functional with respect to an infinitesimal domain perturbation
+
+\section{Geometry Projection}
+\code{function init\_FE()} \\
+\indent\code{FE.mesh\_input.type} \\
+\indent\code{function FE\_compute\_element\_info} :  This function computes element volume centriod locations and max/min nodal coordinates values for the mesh. \\
+\indent\indent\code{CoordArray, FE.elem\_vol, FE.coord\_max, FE.coord\_min}\\
+\indent\code{run(FE.mesh\_input.bcs\_file)}\\
+\indent\indent\code{function compute\_predefined\_node\_sets} : This function computes the requested node sets and store them as members of \code{FE.nodes}. It predefines certain sets of nodes to define displacement boundary conditions and force. 
+
+Input ID a cell array of strings identifying the node sets to compute e.g. \code{\{'T\_edge','BR\_pt'\}}\\
+\indent\indent\code{FE.BC.load\_set} \\
+\indent\indent\code{FE.BC.disp\_set} \\
+\indent\code{function FE\_init\_partitioning\_and\_BC()} : This module initializes the partitioning scheme for the FE equation\\
+\indent\indent\code{FE.BC.disp\_set\{.,.\}}\\
+\indent\indent\indent \code{name : ''}\\
+\indent\indent\indent \code{mat : []}\\
+\indent\indent\indent \code{fixeddofs : []}\\
+\indent\indent\indent \code{freeddofs : []}\\
+\indent\indent\indent \code{fixeddofs\_ind : []}\\
+\indent\indent\indent \code{freeddofs\_ind : []}\\
+\indent\indent\indent \code{n\_free\_dof : []}\\
+\indent\indent\indent initializes know displacement vector (fixeddofs) \\
+\indent\indent\indent \code{Up : []}\\
+
+\end{document}
+=======
 \documentclass{article}
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath}
@@ -52,3 +175,4 @@ Bob Martin "a good architecture allows you to postpone decision-making as long a
 With remote debugging only a single Python process is executed on the remote VM then, on client computer, VSCode "attached itself" to this remote process, so you can match the remote code execution with your local files. It is important to keep exactly the same.py files on client and in host so that the debugging process is able to match line by line the two version.
 The magic lies in a library called ptvsd that makes the bridge for attaching local VSCode to remotely executed process. The remotely executed Python waits until the client debugging agent is attached.
 \end{document}
+>>>>>>> e160c6275b5cd338f28bdc27a68db09903c5cc40
