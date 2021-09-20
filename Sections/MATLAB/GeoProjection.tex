@@ -1,15 +1,15 @@
 \section{Geometry Projection}
 \code{function init\_FE()} \\
-\indent\code{FE.mesh\_input.type} \\
-\indent\code{function FE\_compute\_element\_info} :  This function computes element volume centriod locations and max/min nodal coordinates values for the mesh. \\
+\tikzcircle{2pt}\indent\code{FE.mesh\_input.type} \\
+\tikzcircle{2pt}\indent\code{function FE\_compute\_element\_info} :  This function computes element volume centriod locations and max/min nodal coordinates values for the mesh. \\
 \indent\indent\code{CoordArray, FE.elem\_vol, FE.coord\_max, FE.coord\_min}\\
-\indent\code{run(FE.mesh\_input.bcs\_file)}\\
+\tikzcircle{2pt}\indent\code{run(FE.mesh\_input.bcs\_file)}\\
 \indent\indent\code{function compute\_predefined\_node\_sets} : This function computes the requested node sets and store them as members of \code{FE.nodes}. It predefines certain sets of nodes to define displacement boundary conditions and force. 
 
 Input ID a cell array of strings identifying the node sets to compute e.g. \code{\{'T\_edge','BR\_pt'\}}\\
 \indent\indent\code{FE.BC.load\_set} \\
 \indent\indent\code{FE.BC.disp\_set} \\
-\indent\code{function FE\_init\_partitioning\_and\_BC()} : This module initializes the partitioning scheme for the FE equation\\
+\tikzcircle{2pt}\indent\code{function FE\_init\_partitioning\_and\_BC()} : This module initializes the partitioning scheme for the FE equation\\
 \indent\indent\code{FE.BC.disp\_set\{.,.\}}\\
 \indent\indent\indent \code{name : ''}\\
 \indent\indent\indent \code{mat : []}\\
@@ -20,3 +20,24 @@ Input ID a cell array of strings identifying the node sets to compute e.g. \code
 \indent\indent\indent \code{n\_free\_dof : []}\\
 \indent\indent\indent initializes know displacement vector (fixeddofs) \\
 \indent\indent\indent \code{Up : []}\\
+Similar set is done for \code{FE.BC.load\_set\{.,.\}}
+
+The following is where this code truly deviates from previous work. There is no solid stiffness matrix that may be calculated once and penalized based on the element densities because the elastic coefficient of each element are design-dependent. \\
+\tikzcircle{2pt}\indent\code{function compute\_void\_elasticity()}\\
+\tikzcircle{2pt}\indent\code{init\_element\_stiffness}\\
+\indent\indent\code{FE.edofMat}: construct the edofMat once\\
+\indent\indent\code{FE.iK; FE.iJ} \\
+\indent\indent\code{C\_v = FE.void\_material.C} \\
+\indent\indent\code{compute\_element\_stiffness(repmat(C\_v,[1,1,FE.n\_elem]))}\\
+the mesh was generated, and each element is the same size rectangle. Assuming all elements are rectangular and the same size, the x and z length of the first element and store it in the dim by 1 array Delta \\
+\indent\indent\indent\code{exact\_element\_stiffness\_parallel\_2d(C\_v, Delta)} \\
+\indent\indent\indent\code{exact\_element\_stiffness\_parallel\_3d(C\_v, Delta)} \\
+exact\_element\_stiffness computes the exact element stiffness matrix for a rectangular element and an elastic tensor. \code{C\_v} is the \code{3x3xn\_elem} array of element elastic matrix in the Voigt notation. Delta is the array of element edge lengths. \\
+Even though the tensor is in general orthotropic, we compute the integration in the global (not material) coordinates, and thus must consider the full 21 (upper triangular) terms of the stiffness matrix in the integration. \\
+\tikzcircle{2pt}\indent\code{function init\_material} \\
+This function reads the material information from 'material\_data.txt' and creates a structure 'material' that stores the following \\
+\indent\indent\indent\code{FE.material\{m\}.class} \\
+\indent\indent\indent\code{FE.material\{m\}.name} \\
+\indent\indent\indent\code{FE.material\{m\}.elastic coefficient matrix} \\
+\code{function init\_geometry()}
+
