@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2021.9.9)  17 SEP 2021 17:28
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2021.9.9)  20 SEP 2021 09:25
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -504,17 +504,17 @@ File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 LaTeX Font Info:    Try loading font information for U+msb on input line 47.
  (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-) [3]
-LaTeX Font Info:    Try loading font information for OMS+cmtt on input line 95.
-LaTeX Font Info:    No file OMScmtt.fd. on input line 95.
+) [3] (/home/yoshi/latex_project/Documentation/./../Sections/MATLAB/GeoProjection.tex
+LaTeX Font Info:    Try loading font information for OMS+cmtt on input line 9.
+LaTeX Font Info:    No file OMScmtt.fd. on input line 9.
 
 
 LaTeX Font Warning: Font shape `OMS/cmtt/m/n' undefined
 (Font)              using `OMS/cmsy/m/n' instead
-(Font)              for symbol `textbraceleft' on input line 95.
+(Font)              for symbol `textbraceleft' on input line 9.
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 95--109
+)
+Underfull \hbox (badness 10000) in paragraph at lines 9--88
 
  []
 
@@ -524,8 +524,8 @@ LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
  ) 
 Here is how much of TeX's memory you used:
- 2264 strings out of 492982
- 26169 string characters out of 6134897
+ 2269 strings out of 492982
+ 26420 string characters out of 6134897
  91774 words of memory out of 5000000
  5819 multiletter control sequences out of 15000+600000
  9820 words of font info for 37 fonts, out of 8000000 for 9000

@@ -1,0 +1,22 @@
+\section{Geometry Projection}
+\code{function init\_FE()} \\
+\indent\code{FE.mesh\_input.type} \\
+\indent\code{function FE\_compute\_element\_info} :  This function computes element volume centriod locations and max/min nodal coordinates values for the mesh. \\
+\indent\indent\code{CoordArray, FE.elem\_vol, FE.coord\_max, FE.coord\_min}\\
+\indent\code{run(FE.mesh\_input.bcs\_file)}\\
+\indent\indent\code{function compute\_predefined\_node\_sets} : This function computes the requested node sets and store them as members of \code{FE.nodes}. It predefines certain sets of nodes to define displacement boundary conditions and force. 
+
+Input ID a cell array of strings identifying the node sets to compute e.g. \code{\{'T\_edge','BR\_pt'\}}\\
+\indent\indent\code{FE.BC.load\_set} \\
+\indent\indent\code{FE.BC.disp\_set} \\
+\indent\code{function FE\_init\_partitioning\_and\_BC()} : This module initializes the partitioning scheme for the FE equation\\
+\indent\indent\code{FE.BC.disp\_set\{.,.\}}\\
+\indent\indent\indent \code{name : ''}\\
+\indent\indent\indent \code{mat : []}\\
+\indent\indent\indent \code{fixeddofs : []}\\
+\indent\indent\indent \code{freeddofs : []}\\
+\indent\indent\indent \code{fixeddofs\_ind : []}\\
+\indent\indent\indent \code{freeddofs\_ind : []}\\
+\indent\indent\indent \code{n\_free\_dof : []}\\
+\indent\indent\indent initializes know displacement vector (fixeddofs) \\
+\indent\indent\indent \code{Up : []}\\
