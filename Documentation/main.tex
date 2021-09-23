@@ -6,8 +6,12 @@
 \usepackage{bm}
 \usepackage{xcolor}
 \usepackage{import}
+\usepackage{tikz}
 \definecolor{light-gray}{gray}{0.95}
+
 \newcommand{\code}[1]{\colorbox{light-gray}{\texttt{#1}}}
+
+\newcommand{\tikzcircle}[2][red,fill=red]{\tikz[baseline=-0.5ex]\draw[#1,radius=#2] (0,0) circle ;}%
 \title{Plexus_Documentation_YG}
 \author{Yogesh Gandhi}
 \date{July 2021}

@@ -1,0 +1,2 @@
+{"rule":"UPPERCASE_SENTENCE_START","sentence":"^\\Qfuntion\\E$"}
+{"rule":"UPPERCASE_SENTENCE_START","sentence":"^\\Qfunction\\E$"}
