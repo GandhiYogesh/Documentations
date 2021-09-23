@@ -53,8 +53,8 @@ The optimization problem is solved by means of a standard optimality criteria me
 \begin{equation*}
     \rho_{e}^{new}=
     \begin{cases}
-        max(0, \rho_{e}-m), & \text{if} \ \rho_{e}B_{e}^{\eta}\leq max(0, \rho_{e}-m)  \\
-        min(1, \rho_{e}+m), & \text{if} \ \rho_{e}B_{e}^{\eta}\geq min(0, \rho_{e}-m) \\
+        max(0, \rho_{e}-m),   & \text{if} \ \rho_{e}B_{e}^{\eta}\leq max(0, \rho_{e}-m) \\
+        min(1, \rho_{e}+m),   & \text{if} \ \rho_{e}B_{e}^{\eta}\geq min(0, \rho_{e}-m) \\
         \rho_{e}B_{e}^{\eta}, & \text{otherwise}
     \end{cases}
 \end{equation*}
@@ -90,7 +90,7 @@ Topological Derivatives is the cloased form analytical expression that quantifie
 \indent\code{function FE\_compute\_element\_info} :  This function computes element volume centriod locations and max/min nodal coordinates values for the mesh. \\
 \indent\indent\code{CoordArray, FE.elem\_vol, FE.coord\_max, FE.coord\_min}\\
 \indent\code{run(FE.mesh\_input.bcs\_file)}\\
-\indent\indent\code{function compute\_predefined\_node\_sets} : This function computes the requested node sets and store them as members of \code{FE.nodes}. It predefines certain sets of nodes to define displacement boundary conditions and force. 
+\indent\indent\code{function compute\_predefined\_node\_sets} : This function computes the requested node sets and store them as members of \code{FE.nodes}. It predefines certain sets of nodes to define displacement boundary conditions and force.
 
 Input ID a cell array of strings identifying the node sets to compute e.g. \code{\{'T\_edge','BR\_pt'\}}\\
 \indent\indent\code{FE.BC.load\_set} \\
@@ -108,59 +108,3 @@ Input ID a cell array of strings identifying the node sets to compute e.g. \code
 \indent\indent\indent \code{Up : []}\\
 
 \end{document}
-=======
-\documentclass{article}
-\usepackage[utf8]{inputenc}
-\usepackage{amsmath}
-\usepackage{amsfonts}
-
-
-\title{Plexus_Documentation_YG}
-\author{Yogesh Gandhi}
-\date{July 2021}
-
-\begin{document}
-
-
-\section{Introduction}
-First issue:
-
-\textit{PermissionError: [Errno 13] Permission denied:}
-'/home/.../plexus/.eggs/pytest.runner-5.3.1-py3.8.egg/pytest.runner-5.3.1.dist-info' '/home/.../plexus/.eggs/pytestrunner-5.3.1-py3.8.egg/EGG-INFO'
-\textit{ERROR: Command errored out with exit status 1: python setup.py egg.info Check the logs for full command output.}
-
-
-\section{DMPlex}
-DMPLex is used within PETSC to handle unstructured mesh with useful interfaces for both topology and geometry. A DMPLex object is based on defining a mesh as a Hasse Diagram, where every level of topology is a separate layer in the diagram.
-
-Given that DMPLex objects handles unstructured meshes, every point is defined by its "cone" and "support/closure".
-
-\begin{itemize}
-    \item The support/closure of a point is defined as the set of all the point of the next highest topological dimension that is connected to the current point
-    \item The cone of a point is defined as a set of all the point of the next lowest topological dimension.
-\end{itemize}
-
-Interpolation in DMPLex is defined as a mesh which contains some but not all "intermidate" entities. Nomrmally, a user will have a \textit{fully interpolated mesh}.
-
-Once created, the DMPLex object is then distributed to all available processes. At this point, each process check that its distributed section of the DMPLex object is not NULL, and replace its non-distributed DMPLex object with the distributed ones.
-
-\section{Python3}
-\subsection{super}
-The C3 superclass linearization of a class is the sum of the class plus a unique merge of linearization of its parents and a list of the parent itself. The list of parents as the last argument to the merge process preserves the local precedence order of direct parent classes.
-
-\_\_init\_\_ is an instance method, meaning that it takes as its first argument a reference to an instance. When called directly from the instance, the reference is passed implicitly
-
-\texttt{\#try calling init from the class without specifying an instance}
-
-\texttt{A.\_\_init\_\_()\# TypeError is raised due to the expected but missing reference}
-
-\texttt{a = A(); a.\_\_init\_\_(); A.\_\_init\_\_(a  )}
-
-
-Bob Martin "a good architecture allows you to postpone decision-making as long as possible"
-\section{VSCODE}
-\subsection*{Remote debugging}
-With remote debugging only a single Python process is executed on the remote VM then, on client computer, VSCode "attached itself" to this remote process, so you can match the remote code execution with your local files. It is important to keep exactly the same.py files on client and in host so that the debugging process is able to match line by line the two version.
-The magic lies in a library called ptvsd that makes the bridge for attaching local VSCode to remotely executed process. The remotely executed Python waits until the client debugging agent is attached.
-\end{document}
->>>>>>> e160c6275b5cd338f28bdc27a68db09903c5cc40
