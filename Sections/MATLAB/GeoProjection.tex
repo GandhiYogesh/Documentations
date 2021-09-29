@@ -39,5 +39,19 @@ This function reads the material information from 'material\_data.txt' and creat
 \indent\indent\indent\code{FE.material\{m\}.class} \\
 \indent\indent\indent\code{FE.material\{m\}.name} \\
 \indent\indent\indent\code{FE.material\{m\}.elastic coefficient matrix} \\
-\code{function init\_geometry()}
+\code{function init\_geometry()}\\
 
+\code{function perform\_analysis} performs the geometry projection, solves the finite element problem, and then evaluates relevant functions \\
+
+\tikzcircle{2pt}\indent\code{project\_element\_densities\_and\_element\_elasticity}\\ 
+The function uses the softmax function to choose a single component at overlaps, and to inherit the material properties for the component. \code{OPT.bar\_dv} is an array of \code{size(6,\#bar)} \\
+\indent\indent \code{compute\_bar\_elem\_distance()}
+The bars are represented as offset surface. The boundary of the bar is given by the set of all points at a distance $r_b$ of the line segment with the endpoints $x_{1b}$ and $x_{2b}$. The vector of design parameters for bar $b$ in the offset surface representation is therefore given by $z_{b}=\{x_{1b},x_{2b},r_{b},\alpha_{b}\}$. The number of design variables is $2(n_{d}n_{p}+n_{b})$, where $n_{d}=2,3$ and $n_p$ is the total number of endpoints. 
+
+The advantage of using the  offset surface representation is that the signed distance to the boundary of the bar can simply be computed as the distance to the medial axis $d_b$ minus the bar radius as 
+\begin{equation*}
+    \phi_{b}(x,z_{b})=d_{b}(x,z_{b}) - r_{b}
+\end{equation*}
+The combined density and the signed distance are computed at the element centroid, which we denote as $x_{e}$. Notation $x_{\alpha/\beta}:=x_{\alpha}-x_{\beta}$.
+The lenght of bar $b$ is given by: $l_b = \lVert x_{2b/1b} \rVert$, \\
+and the unit vector along the bar's medial axis
